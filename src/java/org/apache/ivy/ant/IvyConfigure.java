@@ -29,11 +29,11 @@ import org.apache.tools.ant.Task;
 
 /**
  * Configure Ivy with an ivysettings.xml file
- */ 
+ */
 public class IvyConfigure extends Task {
 
     /**
-     * Use to override a previous definition of settings with the same id 
+     * Use to override a previous definition of settings with the same id
      */
     public static final String OVERRIDE_TRUE = "true";
     /**
@@ -50,35 +50,35 @@ public class IvyConfigure extends Task {
             OVERRIDE_TRUE, OVERRIDE_FALSE, OVERRIDE_NOT_ALLOWED
     });
 
-    private String override = OVERRIDE_NOT_ALLOWED;
-    
-    private IvyAntSettings settings = new IvyAntSettings();
+    private String override = OVERRIDE_TRUE;
 
-    public void setSettingsId(String settingsId) {
+    private final IvyAntSettings settings = new IvyAntSettings();
+
+    public void setSettingsId(final String settingsId) {
         settings.setId(settingsId);
     }
-    
+
     public String getSettingsId() {
         return settings.getId();
     }
-    
-    public void setOverride(String override) {
+
+    public void setOverride(final String override) {
         if (!OVERRIDE_VALUES.contains(override)) {
             throw new IllegalArgumentException("invalid override value '" + override + "'. "
                 + "Valid values are " + OVERRIDE_VALUES);
         }
         this.override = override;
     }
-    
+
     public String getOverride() {
         return override;
     }
-    
+
     public File getFile() {
         return settings.getFile();
     }
 
-    public void setFile(File file) {
+    public void setFile(final File file) {
         settings.setFile(file);
     }
 
@@ -86,11 +86,11 @@ public class IvyConfigure extends Task {
         return settings.getUrl();
     }
 
-    public void setUrl(String url) throws MalformedURLException {
+    public void setUrl(final String url) throws MalformedURLException {
         settings.setUrl(url);
     }
-    
-    public void setUrl(URL url) {
+
+    public void setUrl(final URL url) {
         if (url == null) {
             throw new NullPointerException("Cannot set a null URL");
         }
@@ -101,7 +101,7 @@ public class IvyConfigure extends Task {
         return settings.getRealm();
     }
 
-    public void setRealm(String realm) {
+    public void setRealm(final String realm) {
         settings.setRealm(realm);
     }
 
@@ -109,7 +109,7 @@ public class IvyConfigure extends Task {
         return settings.getHost();
     }
 
-    public void setHost(String host) {
+    public void setHost(final String host) {
         settings.setHost(host);
     }
 
@@ -117,7 +117,7 @@ public class IvyConfigure extends Task {
         return settings.getUsername();
     }
 
-    public void setUserName(String userName) {
+    public void setUserName(final String userName) {
         settings.setUsername(userName);
     }
 
@@ -125,32 +125,33 @@ public class IvyConfigure extends Task {
         return settings.getPasswd();
     }
 
-    public void setPasswd(String passwd) {
+    public void setPasswd(final String passwd) {
         settings.setPasswd(passwd);
     }
 
+    @Override
     public void execute() throws BuildException {
-        String settingsId = settings.getId();
-        Object otherRef = getProject().getReference(settingsId);
+        final String settingsId = settings.getId();
+        final Object otherRef = getProject().getReference(settingsId);
 
         if ((otherRef != null) && OVERRIDE_NOT_ALLOWED.equals(override)) {
             throw new BuildException(
-                "Overriding a previous definition of ivy:settings with the id '" 
+                "Overriding a previous definition of ivy:settings with the id '"
                 + settingsId + "' is not allowed when using override='"
                 + OVERRIDE_NOT_ALLOWED + "'.");
         }
-        
+
         if ((otherRef != null) && OVERRIDE_FALSE.equals(override)) {
             verbose("A settings definition is already available for " + settingsId + ": skipping");
             return;
         }
-        
+
         settings.setProject(getProject());
-        getProject().addReference(settingsId, settings);        
+        getProject().addReference(settingsId, settings);
         settings.createIvyEngine(this);
     }
 
-    private void verbose(String msg) {
+    private void verbose(final String msg) {
         log(msg, Project.MSG_VERBOSE);
     }
 }
