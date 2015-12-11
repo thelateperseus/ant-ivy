@@ -129,7 +129,6 @@ public class IvyConfigure extends Task {
         settings.setPasswd(passwd);
     }
 
-    @Override
     public void execute() throws BuildException {
         final String settingsId = settings.getId();
         final Object otherRef = getProject().getReference(settingsId);

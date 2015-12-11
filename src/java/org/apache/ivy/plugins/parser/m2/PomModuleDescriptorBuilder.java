@@ -89,7 +89,7 @@ public class PomModuleDescriptorBuilder {
                 + "but is for execution. It is in the runtime and test classpaths, "
                 + "but not the compile classpath.",
                 new String[] {"compile"}, true, null),
-        new Configuration("test", Visibility.PRIVATE,
+        new Configuration("test", Visibility.PUBLIC,
                 "this scope indicates that the dependency is not required for normal use of "
                 + "the application, and is only available for the test compilation and "
                 + "execution phases.",
